@@ -1,0 +1,858 @@
+!function() {
+	"use strict";
+	var e = document.getElementById("famv-mobile-toggle"),
+		t = document.getElementById("famv-mobile-menu");
+	e && t && e.addEventListener("click", function() {
+		var n = t.classList.toggle("hidden");
+		e.setAttribute("aria-expanded", !n)
+	});
+	var n, a = document.getElementById("famv-search-toggle-mobile"),
+		r = document.getElementById("famv-search-bar-mobile");
+
+	function i() {
+		var e = document.body.classList;
+		if (e.contains("single-post") || e.contains("single-tvshows") || e.contains("single-episodes")) {
+			var t = document.getElementById("main");
+			if (t) {
+				var n = document.querySelector("header"),
+					a = n ? n.offsetHeight : 64,
+					r = t.getBoundingClientRect().top + window.pageYOffset - a;
+				window.scrollTo({
+					top: r,
+					behavior: "smooth"
+				})
+			}
+		}
+	}
+	a && r && a.addEventListener("click", function() {
+			var e = r.classList.toggle("hidden");
+			a.setAttribute("aria-expanded", !e), e || document.getElementById("famv-search-input-mobile").focus()
+		}), document.addEventListener("click", function(e) {
+			var t = e.target.closest(".famv-mobile-sub-toggle");
+			if (!t) {
+				var n = e.target.closest("#famv-mobile-menu .flex.items-center.gap-1 > a");
+				if (!n) return;
+				var a = n.parentElement;
+				if (!a || !a.classList.contains("flex")) return;
+				if (!(t = a.querySelector(".famv-mobile-sub-toggle"))) return
+			}
+			e.preventDefault();
+			var r = t.closest("li").querySelector("ul");
+			if (r) {
+				r.classList.toggle("hidden");
+				var i = t.querySelector("svg");
+				i && (i.style.transform = r.classList.contains("hidden") ? "rotate(0deg)" : "rotate(180deg)")
+			}
+		}), n = "header nav ul.menu > li.menu-item-has-children", document.querySelectorAll(n + " > a").forEach(function(e) {
+			e.addEventListener("click", function(e) {
+				e.preventDefault();
+				var t = this.parentElement;
+				t.parentElement.querySelectorAll(n + ".open").forEach(function(e) {
+					e !== t && e.classList.remove("open")
+				}), t.classList.toggle("open")
+			})
+		}), document.addEventListener("click", function(e) {
+			e.target.closest(n) || document.querySelectorAll(n + ".open").forEach(function(e) {
+				e.classList.remove("open")
+			})
+		}), window.addEventListener("scroll", function() {
+			document.querySelectorAll("header nav ul.menu > li.menu-item-has-children.open").forEach(function(e) {
+				e.classList.remove("open")
+			})
+		}, {
+			passive: !0
+		}),
+		function() {
+			var e = document.querySelector(".desktop-nav");
+			if (e) {
+				var t = document.createElement("li");
+				t.className = "lainnya-toggle relative group hidden", t.innerHTML = '<a class="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-[#e5e7eb] hover:text-white cursor-default" href="#">Lainnya<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></a><div class="absolute left-0 top-full z-50 pt-1 w-48 rounded-xl border border-film-800 bg-[#1f1f1f] shadow-xl hidden group-hover:block"><ul class="p-2 lainnya-items"></ul></div>', e.appendChild(t);
+				var n, a = t.querySelector(".lainnya-items");
+				if (a) o(), window.addEventListener("resize", function() {
+					clearTimeout(n), n = setTimeout(o, 150)
+				})
+			}
+
+			function r() {
+				var t = e.closest(".flex.w-full") || e.parentElement;
+				if (!t) return !0;
+				var n = t.getBoundingClientRect(),
+					a = 0,
+					r = !1,
+					i = [];
+				Array.from(t.children).forEach(function(e) {
+					if (null !== e.offsetParent) {
+						i.push(e);
+						var t = e.getBoundingClientRect().right;
+						t > a && (a = t)
+					}
+				});
+				for (var o = 1; o < i.length; o++) {
+					if (i[o - 1].getBoundingClientRect().right > i[o].getBoundingClientRect().left + 2) {
+						r = !0;
+						break
+					}
+				}
+				return a > n.right + 2 || r
+			}
+
+			function i() {
+				var n = Array.from(e.children).filter(function(e) {
+						return e !== t && "none" !== e.style.display
+					}),
+					r = n[n.length - 1];
+				if (!r) return !1;
+				r.style.display = "none", r.setAttribute("data-lainnya", "1");
+				var i = r.cloneNode(!0);
+				return i.style.display = "", i.classList.remove("hidden"), i.classList.remove("group"),
+					function(e) {
+						var t = e.querySelector("div.absolute");
+						t && (t.classList.remove("group-hover:block"), e.querySelector("a").addEventListener("click", function(e) {
+							e.preventDefault(), t.classList.toggle("hidden")
+						}))
+					}(i), a.appendChild(i), !0
+			}
+
+			function o() {
+				if (null !== e.offsetParent) {
+					a.innerHTML = "", e.querySelectorAll("[data-lainnya]").forEach(function(e) {
+						e.style.display = "", e.removeAttribute("data-lainnya")
+					}), t.classList.add("hidden");
+					for (var n = 30; n-- > 0 && r() && i(););
+					if (a.children.length > 0) {
+						t.classList.remove("hidden");
+						for (var o = 20; o-- > 0 && r() && i(););
+					}
+				} else t.classList.add("hidden")
+			}
+		}(), i();
+	var o, s, l = document.getElementById("famv-player-container"),
+		c = document.getElementById("player-list"),
+		d = document.getElementById("player-select");
+
+	/* 
+	function u(e) {
+		if (i(), l && e) {
+			var t = document.createElement("div");
+			t.id = "famv-player-loading", t.className = "famv-player-loading", t.innerHTML = '<div class="famv-spinner-ring"><div class="famv-spinner-ring-inner"></div><div class="famv-spinner-glow"></div></div><span class="famv-loading-text">Memuat Player...</span>';
+			var n = document.createElement("iframe");
+			n.src = e, n.className = "h-full w-full border-0", n.setAttribute("allowfullscreen", ""), n.style.display = "none", n.addEventListener("load", function() {
+				var e = document.getElementById("famv-player-loading");
+				e && e.remove(), n.style.display = ""
+			}), l.innerHTML = "", l.appendChild(t), l.appendChild(n), setTimeout(function() {
+				var e = document.getElementById("famv-player-loading");
+				e && e.remove(), n.style.display = ""
+			}, 1e4)
+		}
+	} 
+	*/
+
+	function f(e) {
+		c.querySelectorAll(".player-option").forEach(function(e) {
+			e.classList.remove("active"), e.setAttribute("aria-selected", "false")
+		}), e && (e.classList.add("active"), e.setAttribute("aria-selected", "true"))
+	}
+	c && l && c.addEventListener("click", function(e) {
+			var t = e.target.closest(".famv-server-btn");
+			if (t) {
+				e.preventDefault();
+				var n = t.getAttribute("data-url");
+				n && (f(t), d && (d.value = n), u(n))
+			}
+		}), d && l && d.addEventListener("change", function() {
+			var e = this.value;
+			e && (f(c ? c.querySelector('.famv-server-btn[data-url="' + e.replace(/&/g, "&amp;") + '"]') : null), u(e))
+		}),
+		function() {
+			if (document.getElementById("famv-player-loading")) {
+				var e = l ? l.querySelector("iframe") : null;
+				if (e) {
+					var t = !1;
+					e.addEventListener("load", n), setTimeout(n, 1e4)
+				}
+			}
+
+			function n() {
+				if (!t) {
+					t = !0;
+					var n = document.getElementById("famv-player-loading");
+					n && n.remove(), e.style.display = ""
+				}
+			}
+		}(), o = document.getElementById("famv-fullscreen-btn"), s = document.querySelector(".player-main"), o && s && o.addEventListener("click", function(e) {
+			e.preventDefault(), s.requestFullscreen ? s.requestFullscreen() : s.webkitRequestFullscreen ? s.webkitRequestFullscreen() : s.msRequestFullscreen && s.msRequestFullscreen()
+		}),
+		function() {
+			var e = document.getElementById("famv-cinema-btn"),
+				t = document.querySelector(".player-section");
+			if (e && t) {
+				var n = null;
+				e.addEventListener("click", function(e) {
+					e.preventDefault(), t.classList.toggle("cinema-mode");
+					var a = t.classList.contains("cinema-mode");
+					if (t.style.maxWidth = a ? "100%" : "", t.style.position = a ? "fixed" : "", t.style.inset = a ? "0" : "", t.style.zIndex = a ? "9999" : "", t.style.background = a ? "#000" : "", a) {
+						n = document.activeElement;
+						var r = t.querySelector("iframe");
+						r && r.focus()
+					} else n = null
+				}), document.addEventListener("keydown", function(e) {
+					"Escape" === e.key && t.classList.contains("cinema-mode") && (t.classList.remove("cinema-mode"), t.style.maxWidth = "", t.style.position = "", t.style.inset = "", t.style.zIndex = "", t.style.background = "", n && (n.focus(), n = null))
+				})
+			}
+		}(), document.querySelectorAll(".famv-season-toggle").forEach(function(e) {
+			e.addEventListener("click", function() {
+				var t = e.getAttribute("data-season"),
+					n = document.querySelector('.famv-season-list[data-season="' + t + '"]');
+				if (n) {
+					n.classList.toggle("hidden");
+					var a = e.querySelector(".famv-season-icon");
+					a && (a.style.transform = n.classList.contains("hidden") ? "rotate(0deg)" : "rotate(90deg)")
+				}
+			})
+		});
+	var m = document.getElementById("famv-search-input"),
+		v = document.getElementById("famv-search-input-mobile"),
+		p = document.getElementById("famv-search-results-desktop"),
+		g = document.getElementById("famv-search-results-mobile"),
+		h = null,
+		y = [];
+
+	function b(e) {
+		p && (p.innerHTML = e, p.classList.remove("hidden")), g && (g.innerHTML = e, g.classList.remove("hidden"))
+	}
+
+	function x() {
+		p && (p.classList.add("hidden"), p.innerHTML = ""), g && (g.classList.add("hidden"), g.innerHTML = "")
+	}
+
+	/* 
+	function w(e) {
+		clearTimeout(h);
+		var t = e.value.trim();
+		t.length < 2 ? x() : h = setTimeout(function() {
+			b('<div class="p-3 text-sm text-film-400 text-center">Loading...</div>');
+			var e = new XMLHttpRequest;
+			e.open("GET", famvAjax.restUrl + "filmapik/search/?keyword=" + encodeURIComponent(t) + "&nonce=" + famvAjax.searchNonce + "&_=" + Date.now(), !0), e.onload = function() {
+				if (200 === e.status) {
+					var n = JSON.parse(e.responseText);
+					if (n.error) return void b('<div class="p-3 text-sm text-film-400 text-center">' + (n.title || "No results") + "</div>");
+					b(function(e, t) {
+						var n = "<ul>";
+						for (var a in e)
+							if (e.hasOwnProperty(a)) {
+								var r = e[a],
+									i = r.extra || {};
+								n += '<li class="relative flex items-center gap-3 px-3 py-2 transition hover:bg-film-800">', n += '<div class="w-12 h-16 overflow-hidden rounded flex-shrink-0">', n += '<img src="' + r.img + '" class="w-full h-full object-cover" loading="lazy">', n += "</div>", n += '<div class="min-w-0 flex-1">', n += '<div class="text-sm font-medium text-white truncate">' + r.title + "</div>", n += '<div class="text-xs text-film-400 mt-1">', i.imdb && (n += '<span class="imdb"><span class="text-amber-400">★</span> ' + i.imdb + "</span>"), n += "</div></div>", n += '<a href="' + r.url + '" class="absolute inset-0"></a>', n += "</li>"
+							} return n += '<li><a href="' + famvAjax.homeUrl + "?s=" + encodeURIComponent(t) + '" class="block w-full text-center py-2 text-xs italic text-film-400 hover:text-white">View all results</a></li>', n + "</ul>"
+					}(n, t))
+				}
+			}, e.onerror = function() {
+				b('<div class="p-3 text-sm text-film-400 text-center">Network error</div>')
+			}, e.send()
+		}, 400)
+	} 
+	*/
+	m && y.push(m), v && y.push(v), y.forEach(function(e) {
+		e.addEventListener("input", function() {
+			y.forEach(function(t) {
+				t !== e && (t.value = e.value)
+			}), w(e)
+		})
+	}), y.length && (p || g) && document.addEventListener("click", function(e) {
+		var t = !1;
+		y.forEach(function(n) {
+			n && n.contains(e.target) && (t = !0)
+		});
+		var n = p && p.contains(e.target) || g && g.contains(e.target);
+		t || n || x()
+	});
+	/* 
+	var L = document.getElementById("famv-ajax-counter");
+	if (L) {
+		var E = L.getAttribute("data-postid");
+		if (E) {
+			var k = new XMLHttpRequest;
+			k.open("POST", famvAjax.ajaxUrl, !0), k.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"), k.onerror = function() {}, k.send("action=famv_viewcounter&post_id=" + E)
+		}
+	} 
+	*/
+
+	function M(e, t, n, a) {
+		var r = e.scrollLeft,
+			i = t - r,
+			o = null,
+			s = e.style.scrollSnapType;
+		e.style.scrollSnapType = "none", requestAnimationFrame(function t(l) {
+			null === o && (o = l);
+			var c = Math.min((l - o) / n, 1),
+				d = c < .5 ? 4 * c * c * c : 1 - Math.pow(-2 * c + 2, 3) / 2;
+			e.scrollLeft = r + i * d, c < 1 ? requestAnimationFrame(t) : (e.style.scrollSnapType = s, a && a())
+		})
+	}
+
+	function A(e, t, n, a) {
+		var r, i = document.getElementById(e),
+			o = document.querySelector(t),
+			s = document.querySelector(n);
+		i && o && s && (o.addEventListener("click", function() {
+			var e, t;
+			clearInterval(r), M(i, (e = i.scrollLeft, (t = d()) <= 0 ? 0 : e <= 0 ? t : Math.max(0, e - c())), 600), l(800)
+		}), s.addEventListener("click", function() {
+			clearInterval(r), M(i, u(), 600), l(800)
+		}), i.addEventListener("mouseenter", function() {
+			clearInterval(r)
+		}), i.addEventListener("mouseleave", function() {
+			l(600)
+		}), l(800));
+
+		function l(e) {
+			clearInterval(r), r = setInterval(function() {
+				M(i, u(), e || 800)
+			}, a)
+		}
+
+		function c() {
+			var e = i.querySelector("a, .snap-start");
+			return e ? e.offsetWidth + 12 : 160
+		}
+
+		function d() {
+			return Math.max(0, i.scrollWidth - i.clientWidth)
+		}
+
+		function u() {
+			var e = i.scrollLeft,
+				t = d();
+			if (t <= 0) return 0;
+			if (e >= t - 10) return 0;
+			var n = e + c();
+			return n > t ? t : n
+		}
+	}
+
+	function I(e, t) {
+		if (t <= 1) return "";
+		var n = '<div class="pagination-wrap mt-8 flex flex-wrap items-center justify-center gap-2">';
+		e > 1 && (n += '<a href="#" class="page-numbers famv-page-link" data-page="' + (e - 1) + '">‹</a>'), n += 1 === e ? '<span aria-current="page" class="page-numbers current">1</span>' : '<a href="#" class="page-numbers famv-page-link" data-page="1">1</a>';
+		var a = Math.max(2, e - 2),
+			r = Math.min(t - 1, e + 2);
+		a > 2 && (n += '<span class="page-numbers dots">...</span>');
+		for (var i = a; i <= r; i++) n += i === e ? '<span aria-current="page" class="page-numbers current">' + i + "</span>" : '<a href="#" class="page-numbers famv-page-link" data-page="' + i + '">' + i + "</a>";
+		return r < t - 1 && (n += '<span class="page-numbers dots">...</span>'), n += e === t ? '<span aria-current="page" class="page-numbers current">' + t + "</span>" : '<a href="#" class="page-numbers famv-page-link" data-page="' + t + '">' + t + "</a>", e < t && (n += '<a href="#" class="page-numbers famv-page-link" data-page="' + (e + 1) + '">›</a>'), n += "</div>"
+	}! function() {
+		/*
+		var e = document.getElementById("famv-fav-btn");
+		if (e) {
+			var t = e.getAttribute("data-postid"),
+				n = e.getAttribute("data-nonce") || "",
+				a = "1" === e.getAttribute("data-fav");
+			r(), e.addEventListener("click", function() {
+				if (famvAjax.loggedIn) {
+					var e = a ? "remove" : "add",
+						i = new XMLHttpRequest;
+					i.open("POST", famvAjax.ajaxUrl, !0), i.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"), i.onload = function() {
+						200 === i.status && (JSON.parse(i.responseText).success && (a = !a, r()))
+					}, i.onerror = function() {}, i.send("action=famv_process_list&postid=" + t + "&type=" + e + "&nonce=" + n)
+				} else alert(famvAjax.loginRequired)
+			})
+		} 
+		*/
+
+		/* 
+		function r() {
+			e.innerHTML = a ? '<svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' : '<svg class="h-5 w-5 text-film-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>', e.classList.toggle("text-red-500", a), e.classList.toggle("text-film-400", !a)
+		} 
+		*/
+	}(),
+	function() {
+		var e = document.querySelectorAll(".famv-share-btn");
+		if (e.length) {
+			var t = encodeURIComponent(window.location.href),
+				n = encodeURIComponent(document.title);
+			e.forEach(function(e) {
+				var a = e.getAttribute("data-network"),
+					r = "";
+				switch (a) {
+					case "facebook":
+						r = "https://www.facebook.com/sharer/sharer.php?u=" + t;
+						break;
+					case "twitter":
+						r = "https://twitter.com/intent/tweet?text=" + n + "&url=" + t;
+						break;
+					case "whatsapp":
+						r = "https://wa.me/?text=" + n + "%20" + t;
+						break;
+					case "telegram":
+						r = "https://t.me/share/url?url=" + t + "&text=" + n
+				}
+				e.addEventListener("click", function(t) {
+					t.preventDefault(), r && window.open(r, "_blank", "width=600,height=500");
+					var n = e.getAttribute("data-postid");
+					if (n) {
+						var a = new XMLHttpRequest;
+						a.open("POST", famvAjax.ajaxUrl, !0), a.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"), a.onerror = function() {}, a.send("action=famv_social_share&id=" + n)
+					}
+				})
+			})
+		}
+	}(),
+	function() {
+		var e = document.getElementById("famv-back-top");
+		e && (window.addEventListener("scroll", function() {
+			e.classList.toggle("hidden", window.scrollY < 400), e.classList.toggle("flex", window.scrollY >= 400)
+		}), e.addEventListener("click", function() {
+			window.scrollTo({
+				top: 0,
+				behavior: "smooth"
+			})
+		}))
+	}(), A("famv-boxoffice", ".famv-boxoffice-prev", ".famv-boxoffice-next", 4e3), A("famv-tvshows", ".famv-tvshows-prev", ".famv-tvshows-next", 3e3),
+		function() {
+			var e = document.getElementById("famv-trailer-btn"),
+				t = document.getElementById("famv-trailer-modal"),
+				n = document.getElementById("famv-trailer-close"),
+				a = document.getElementById("famv-trailer-player");
+			if (e && t && n && a) {
+				var r = null,
+					i = null;
+				e.addEventListener("click", function() {
+					var s = e.getAttribute("data-trailer-id");
+					s && (i = document.activeElement, (r = document.createElement("iframe")).src = "https://www.youtube.com/embed/" + s + "?autoplay=1&autohide=1", r.className = "h-full w-full", r.setAttribute("frameborder", "0"), r.setAttribute("allow", "autoplay; encrypted-media"), r.setAttribute("allowfullscreen", ""), r.setAttribute("loading", "lazy"), r.setAttribute("tabindex", "0"), a.appendChild(r), t.classList.remove("hidden"), t.classList.add("flex"), document.body.style.overflow = "hidden", n.focus(), t.addEventListener("keydown", o))
+				}), n.addEventListener("click", s), t.addEventListener("click", function(e) {
+					e.target === t && s()
+				}), document.addEventListener("keydown", function(e) {
+					"Escape" !== e.key || t.classList.contains("hidden") || s()
+				})
+			}
+
+			function o(e) {
+				var n = t.querySelectorAll('a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"]), iframe');
+				if (0 !== n.length) {
+					var a = n[0],
+						r = n[n.length - 1];
+					"Tab" === e.key && (e.shiftKey ? document.activeElement === a && (e.preventDefault(), r.focus()) : document.activeElement === r && (e.preventDefault(), a.focus()))
+				}
+			}
+
+			function s() {
+				t.classList.add("hidden"), t.classList.remove("flex"), document.body.style.overflow = "", t.removeEventListener("keydown", o), r && (r.src = "", r.remove(), r = null), i && (i.focus(), i = null)
+			}
+		}(),
+		function() {
+			/* 
+			var e = document.getElementById("famv-player-trailer");
+			e && l && e.addEventListener("click", function(t) {
+				i(), t.preventDefault();
+				var n = e.getAttribute("data-trailer-id");
+				if (n) {
+					var a = "https://www.youtube.com/embed/" + n + "?autoplay=1&autohide=1",
+						r = document.createElement("div");
+					r.id = "famv-player-loading", r.className = "famv-player-loading", r.innerHTML = '<div class="famv-spinner-ring"><div class="famv-spinner-ring-inner"></div><div class="famv-spinner-glow"></div></div><span class="famv-loading-text">Memuat...</span>';
+					var o = document.createElement("iframe");
+					o.src = a, o.className = "h-full w-full border-0", o.setAttribute("allowfullscreen", ""), o.setAttribute("allow", "autoplay; encrypted-media"), o.style.display = "none", o.addEventListener("load", function() {
+						var e = document.getElementById("famv-player-loading");
+						e && e.remove(), o.style.display = ""
+					}), l.innerHTML = "", l.appendChild(r), l.appendChild(o), setTimeout(function() {
+						var e = document.getElementById("famv-player-loading");
+						e && e.remove(), o.style.display = ""
+					}, 1e4)
+				}
+			}) 
+			*/
+		}(), document.querySelectorAll(".famv-truncated-text").forEach(function(e) {
+			if (e.scrollHeight > e.clientHeight) {
+				var t = document.createElement("button");
+				t.className = "famv-readmore-btn", t.innerHTML = 'Lihat Selengkapnya <svg class="icon h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>', t.addEventListener("click", function() {
+					e.classList.toggle("expanded"), t.classList.toggle("expanded"), t.innerHTML = e.classList.contains("expanded") ? 'Sembunyikan <svg class="icon h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>' : 'Lihat Selengkapnya <svg class="icon h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>'
+				}), e.parentNode.insertBefore(t, e.nextSibling)
+			}
+		}),
+		function() {
+			var e = document.getElementById("famv-archive-page");
+			if (e) {
+				var t = document.getElementById("famv-archive-results"),
+					n = e.querySelector(".famv-archive-sort"),
+					a = e.querySelectorAll(".famv-archive-filter"),
+					r = e.getAttribute("data-archive-tax") || "",
+					i = e.getAttribute("data-archive-term") || "";
+				n && t && (n.addEventListener("change", function() {
+					c(o(1), !0)
+				}), a.forEach(function(e) {
+					e.addEventListener("change", function() {
+						c(o(1), !0)
+					})
+				}), s())
+			}
+
+			function o(e) {
+				var t = {
+					sort: n.value,
+					archive_tax: r,
+					archive_term: i,
+					paged: e || 1
+				};
+				return a.forEach(function(e) {
+					var n = e.getAttribute("data-key"),
+						a = e.value;
+					a && (t[n] = a)
+				}), t
+			}
+
+			function s() {
+				t.querySelectorAll(".famv-page-link").forEach(function(e) {
+					e.addEventListener("click", function(e) {
+						e.preventDefault(), c(o(parseInt(this.getAttribute("data-page"), 10)), !0)
+					})
+				})
+			}
+
+			function l(e) {
+				n.disabled = e, a.forEach(function(t) {
+					t.disabled = e
+				})
+			}
+
+			function c(e, n) {
+				l(!0), t.innerHTML = '<div class="famv-filter-loading rounded-xl border border-film-800 bg-film-900 p-12 text-center"><svg class="famv-spinner-icon mx-auto h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg><p class="mt-4 text-film-400">Memuat data...</p></div>';
+				var a = new XMLHttpRequest;
+				a.open("GET", function(e) {
+					var t = [];
+					for (var n in e) e.hasOwnProperty(n) && e[n] && t.push(encodeURIComponent(n) + "=" + encodeURIComponent(e[n]));
+					return famvAjax.restUrl + "filmapik/filter/?" + t.join("&") + "&_=" + Date.now()
+				}(e), !0), a.onload = function() {
+					if (l(!1), 200 === a.status) {
+						var r = JSON.parse(a.responseText);
+						if (!r.items || 0 === r.items.length) return void(t.innerHTML = '<div class="rounded-xl border border-film-800 bg-film-900 p-12 text-center"><p class="text-film-400">Tidak ada konten ditemukan.</p></div>');
+						var i = e.paged || 1,
+							o = '<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">' + r.items + "</div>";
+						if (o += I(i, r.pages), t.innerHTML = o, s(), n) {
+							var c = [];
+							for (var d in e) e.hasOwnProperty(d) && "paged" !== d && "post_type" !== d && e[d] && c.push(encodeURIComponent(d) + "=" + encodeURIComponent(e[d]));
+							var u = window.location.pathname + (c.length ? "?" + c.join("&") : "");
+							history.replaceState(null, "", u)
+						}
+					}
+				}, a.onerror = function() {
+					l(!1), t.innerHTML = '<div class="rounded-xl border border-film-800 bg-film-900 p-12 text-center"><p class="text-film-400">Network error</p></div>'
+				}, a.send()
+			}
+		}(),
+		function() {
+			var e = document.getElementById("famv-search-page");
+			if (e) {
+				var t, n = e.querySelectorAll(".famv-filter-tab"),
+					a = e.querySelector(".famv-filter-select"),
+					r = document.getElementById("famv-search-results"),
+					i = document.getElementById("famv-search-count"),
+					o = e.getAttribute("data-search-query") || "",
+					s = "all";
+				if (r) t = e.querySelector(".famv-filter-tab-active"), s = t ? t.getAttribute("data-post-type") : "all", n.forEach(function(e) {
+					e.addEventListener("click", function() {
+						var e = this.getAttribute("data-post-type");
+						e !== s && (s = e, function(e) {
+							n.forEach(function(t) {
+								t.classList.remove("famv-filter-tab-active"), t.getAttribute("data-post-type") === e && t.classList.add("famv-filter-tab-active")
+							})
+						}(e), d({
+							s: o,
+							post_type: e,
+							sort: a ? a.value : "",
+							paged: 1
+						}, !0))
+					})
+				}), a && a.addEventListener("change", function() {
+					d({
+						s: o,
+						post_type: s,
+						sort: this.value,
+						paged: 1
+					}, !0)
+				}), l()
+			}
+
+			function l() {
+				r.querySelectorAll(".famv-page-link").forEach(function(e) {
+					e.addEventListener("click", function(e) {
+						e.preventDefault(), d({
+							s: o,
+							post_type: s,
+							sort: a ? a.value : "",
+							paged: parseInt(this.getAttribute("data-page"), 10)
+						}, !0)
+					})
+				})
+			}
+
+			function c(e) {
+				n.forEach(function(t) {
+					t.disabled = e
+				}), a && (a.disabled = e)
+			}
+
+			function d(e, t) {
+				c(!0), r.innerHTML = '<div class="famv-filter-loading rounded-xl border border-film-800 bg-film-900 p-12 text-center"><svg class="famv-spinner-icon mx-auto h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg><p class="mt-4 text-film-400">Memuat data...</p></div>', i && (i.textContent = "Memuat...");
+				var n = new XMLHttpRequest;
+				n.open("GET", function(e) {
+					var t = [];
+					for (var n in e) e.hasOwnProperty(n) && e[n] && t.push(encodeURIComponent(n) + "=" + encodeURIComponent(e[n]));
+					return famvAjax.restUrl + "filmapik/filter/?" + t.join("&") + "&_=" + Date.now()
+				}(e), !0), n.onload = function() {
+					if (c(!1), 200 === n.status) {
+						var d = JSON.parse(n.responseText);
+						if (!d.items || 0 === d.items.length) return r.innerHTML = '<div class="rounded-xl border border-film-800 bg-film-900 p-12 text-center"><p class="text-film-400">Tidak ada hasil ditemukan.</p></div>', void(i && (i.textContent = "0 hasil ditemukan"));
+						var u = e.paged || 1,
+							f = '<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">' + d.items + "</div>";
+						if (f += I(u, d.pages), r.innerHTML = f, i && (i.textContent = d.total + " hasil ditemukan"), l(), t) {
+							var m = [];
+							"all" !== s && m.push("post_type=" + encodeURIComponent(s)), a && a.value && m.push("sort=" + encodeURIComponent(a.value)), m.push("s=" + encodeURIComponent(o)), history.replaceState(null, "", "?" + m.join("&"))
+						}
+					}
+				}, n.onerror = function() {
+					c(!1), r.innerHTML = '<div class="rounded-xl border border-film-800 bg-film-900 p-12 text-center"><p class="text-film-400">Network error</p></div>', i && (i.textContent = "Error")
+				}, n.send()
+			}
+		}(),
+		function() {
+			var e = document.getElementById("famv-browse-page");
+			if (e) {
+				var t = e.querySelectorAll(".famv-filter-tab"),
+					n = e.querySelectorAll(".famv-filter-select"),
+					a = e.querySelector(".famv-filter-kualitas"),
+					r = e.querySelector(".famv-filter-status"),
+					i = document.getElementById("famv-browse-results"),
+					o = "all";
+				t.forEach(function(n) {
+					n.classList.contains("famv-filter-tab-active") && (o = n.getAttribute("data-post-type")), n.addEventListener("click", function() {
+						var n = this.getAttribute("data-post-type");
+						n !== o && (o = n, function(e) {
+							t.forEach(function(t) {
+								t.classList.remove("famv-filter-tab-active"), t.setAttribute("aria-selected", "false"), t.getAttribute("data-post-type") === e && (t.classList.add("famv-filter-tab-active"), t.setAttribute("aria-selected", "true"))
+							})
+						}(n), l(), function(t) {
+							var n = new XMLHttpRequest;
+							n.open("GET", famvAjax.restUrl + "filmapik/filter-options/?post_type=" + t + "&_=" + Date.now(), !0), n.onload = function() {
+								if (200 === n.status) {
+									var t = JSON.parse(n.responseText),
+										a = e.querySelector('[data-key="tahun"]'),
+										r = e.querySelector('[data-key="genre"]');
+									a && t.tahun && (a.innerHTML = t.tahun), r && t.genre && (r.innerHTML = t.genre)
+								}
+							}, n.send()
+						}(n), d(s(), !0))
+					})
+				}), n.forEach(function(e) {
+					e.addEventListener("change", function() {
+						d(s(), !0)
+					})
+				}), l(), u()
+			}
+
+			function s() {
+				var e = {
+					paged: 1
+				};
+				return e.post_type = o, n.forEach(function(t) {
+					var n = t.getAttribute("data-key"),
+						a = t.value;
+					a && (e[n] = a)
+				}), e
+			}
+
+			function l() {
+				var e = "post" === o,
+					t = "tvshows" === o;
+				a && (a.style.display = e ? "" : "none", e || (a.value = "")), r && (r.style.display = t ? "" : "none", t || (r.value = ""))
+			}
+
+			function c(e) {
+				t.forEach(function(t) {
+					t.disabled = e
+				}), n.forEach(function(t) {
+					t.disabled = e
+				})
+			}
+
+			function d(e, t) {
+				c(!0), i.innerHTML = '<div class="famv-filter-loading rounded-xl border border-film-800 bg-film-900 p-12 text-center"><svg class="famv-spinner-icon mx-auto h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg><p class="mt-4 text-film-400">Memuat data...</p></div>';
+				var n = new XMLHttpRequest;
+				n.open("GET", function(e) {
+					var t = [];
+					for (var n in e) e.hasOwnProperty(n) && e[n] && t.push(encodeURIComponent(n) + "=" + encodeURIComponent(e[n]));
+					return famvAjax.restUrl + "filmapik/filter/?" + t.join("&") + "&_=" + Date.now()
+				}(e), !0), n.onload = function() {
+					if (c(!1), 200 === n.status) {
+						var a = JSON.parse(n.responseText);
+						if (!a.items || 0 === a.items.length) return void(i.innerHTML = '<div class="rounded-xl border border-film-800 bg-film-900 p-12 text-center"><p class="text-film-400">Tidak ada konten ditemukan.</p></div>');
+						var r = e.paged || 1,
+							o = '<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">' + a.items + "</div>";
+						if (o += I(r, a.pages), i.innerHTML = o, u(), t) {
+							var s = [];
+							for (var l in e) e.hasOwnProperty(l) && "paged" !== l && "post_type" !== l && e[l] && s.push(encodeURIComponent(l) + "=" + encodeURIComponent(e[l]));
+							var d = window.location.pathname + (s.length ? "?" + s.join("&") : "");
+							history.replaceState(null, "", d)
+						}
+					}
+				}, n.onerror = function() {
+					c(!1), i.innerHTML = '<div class="rounded-xl border border-film-800 bg-film-900 p-12 text-center"><p class="text-film-400">Network error</p></div>'
+				}, n.send()
+			}
+
+			function u() {
+				i.querySelectorAll(".famv-page-link").forEach(function(e) {
+					e.addEventListener("click", function(e) {
+						e.preventDefault();
+						var t = s();
+						t.paged = parseInt(this.getAttribute("data-page"), 10), d(t, !0)
+					})
+				})
+			}
+		}(),
+		function() {
+			var e = document.getElementById("famv-latest-page");
+			if (e) {
+				var t = e.querySelectorAll(".famv-filter-select"),
+					n = document.getElementById("famv-latest-results");
+				t.length && n && (t.forEach(function(e) {
+					e.addEventListener("change", function() {
+						i(a(), !0)
+					})
+				}), o())
+			}
+
+			function a() {
+				var e = {
+					post_type: "post",
+					paged: 1
+				};
+				return t.forEach(function(t) {
+					var n = t.getAttribute("data-key"),
+						a = t.value;
+					a && (e[n] = a)
+				}), e
+			}
+
+			function r(e) {
+				t.forEach(function(t) {
+					t.disabled = e
+				})
+			}
+
+			/* 
+			function i(e, t) {
+				r(!0), n.innerHTML = '<div class="famv-filter-loading rounded-xl border border-film-800 bg-film-900 p-12 text-center"><svg class="famv-spinner-icon mx-auto h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg><p class="mt-4 text-film-400">Memuat data...</p></div>';
+				var a = new XMLHttpRequest;
+				a.open("GET", function(e) {
+					var t = [];
+					for (var n in e) e.hasOwnProperty(n) && e[n] && t.push(encodeURIComponent(n) + "=" + encodeURIComponent(e[n]));
+					return famvAjax.restUrl + "filmapik/filter/?" + t.join("&") + "&_=" + Date.now()
+				}(e), !0), a.onload = function() {
+					if (r(!1), 200 === a.status) {
+						var i = JSON.parse(a.responseText);
+						if (!i.items || 0 === i.items.length) return void(n.innerHTML = '<div class="rounded-xl border border-film-800 bg-film-900 p-12 text-center"><p class="text-film-400">Tidak ada konten ditemukan.</p></div>');
+						var s = e.paged || 1,
+							l = '<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">' + i.items + "</div>";
+						if (l += I(s, i.pages), n.innerHTML = l, o(), t) {
+							var c = [];
+							for (var d in e) e.hasOwnProperty(d) && "paged" !== d && "post_type" !== d && e[d] && c.push(encodeURIComponent(d) + "=" + encodeURIComponent(e[d]));
+							var u = window.location.pathname + (c.length ? "?" + c.join("&") : "");
+							history.replaceState(null, "", u)
+						}
+					}
+				}, a.onerror = function() {
+					r(!1), n.innerHTML = '<div class="rounded-xl border border-film-800 bg-film-900 p-12 text-center"><p class="text-film-400">Network error</p></div>'
+				}, a.send()
+			}
+			*/
+			function o() {
+				n.querySelectorAll(".famv-page-link").forEach(function(e) {
+					e.addEventListener("click", function(e) {
+						e.preventDefault();
+						var t = a();
+						t.paged = parseInt(this.getAttribute("data-page"), 10), i(t, !0)
+					})
+				})
+			}
+		}(),
+		function() {
+			function e() {
+				document.querySelectorAll(".famv-img-shimmer img:not(.loaded)").forEach(function(e) {
+					if (e.complete && e.naturalWidth > 0) {
+						e.classList.add("loaded");
+						var t = e.closest(".famv-img-shimmer");
+						t && t.classList.add("loaded")
+					}
+				})
+			}
+			e(), new MutationObserver(e).observe(document.body, {
+				childList: !0,
+				subtree: !0
+			}), document.addEventListener("load", function(e) {
+				if ("IMG" === e.target.tagName && e.target.closest(".famv-img-shimmer")) {
+					e.target.classList.add("loaded");
+					var t = e.target.closest(".famv-img-shimmer");
+					t && t.classList.add("loaded")
+				}
+			}, !0)
+		}(),
+		function() {
+			/* 
+			if (famvAjax.reportActive && "1" === famvAjax.reportActive) {
+				var e = null,
+					t = null;
+				document.addEventListener("click", function(a) {
+					var r, i = a.target.closest(".famv-report-btn");
+					i && !i.closest(".famv-report-toast") && (r = {
+						postId: i.getAttribute("data-post-id"),
+						postType: i.getAttribute("data-post-type"),
+						sourceType: i.getAttribute("data-source-type"),
+						sourceIndex: i.getAttribute("data-source-index"),
+						sourceName: i.getAttribute("data-source-name")
+					}, e || ((e = document.createElement("div")).className = "fixed inset-0 z-50 items-center justify-center bg-black/80 transition-opacity duration-200", e.style.display = "none", e.setAttribute("role", "dialog"), e.setAttribute("aria-modal", "true"), e.setAttribute("aria-label", "Laporkan Rusak"), e.innerHTML = '<div class="relative bg-film-950 rounded-xl border border-film-800 px-4 py-4 w-full max-w-md mx-4 shadow-2xl"><button id="famv-report-close" class="absolute top-2 right-2 text-film-400 hover:text-film-100 hover:bg-film-800 transition rounded-lg p-1.5" aria-label="Tutup"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button><h3 class="text-lg font-semibold text-film-100 mb-2">Laporkan Source Rusak</h3><p class="text-sm text-film-300 mb-4">Apakah source <strong class="text-film-100" id="famv-report-source-name"></strong> tidak berfungsi? Kirim laporan agar admin segera memperbaiki.</p><textarea id="famv-report-comment" class="w-full bg-film-900 border border-film-700 rounded-lg px-3 py-2 text-sm text-film-100 placeholder-film-500 mb-4" rows="2" placeholder="Opsional: deskripsi masalah..."></textarea><input type="text" id="famv-report-website" style="position:absolute;left:-9999px;top:-9999px;width:0;height:0;opacity:0" tabindex="-1" autocomplete="off"><div class="flex gap-2 justify-end"><button id="famv-report-cancel" class="px-4 py-2 text-sm text-film-300 hover:text-film-100 transition">Batal</button><button id="famv-report-submit" class="px-4 py-2 text-sm bg-red-600 hover:bg-red-500 text-white rounded-lg transition font-medium">Kirim Laporan</button></div></div>', document.body.appendChild(e), e.addEventListener("click", function(t) {
+						t.target === e && n()
+					})), t = r, e.querySelector("#famv-report-source-name").textContent = r.sourceName || "", e.querySelector("#famv-report-comment").value = "", e.querySelector("#famv-report-website").value = "", e.style.display = "flex")
+				}), document.addEventListener("click", function(e) {
+					("famv-report-cancel" === e.target.id || e.target.closest("#famv-report-close")) && n()
+				}), document.addEventListener("click", function(e) {
+					("famv-report-submit" === e.target.id || e.target.closest("#famv-report-submit")) && t && function(e) {
+						var t = new XMLHttpRequest,
+							r = new URLSearchParams;
+						r.set("post_id", e.postId), r.set("post_type", e.postType), r.set("source_type", e.sourceType), r.set("source_index", e.sourceIndex), r.set("source_name", e.sourceName || "");
+						var i = document.getElementById("famv-report-comment");
+						i && i.value.trim() && r.set("comment", i.value.trim());
+						var o = document.getElementById("famv-report-website");
+						o && o.value && r.set("website", o.value), r.set("nonce", famvAjax.reportNonce), t.open("POST", famvAjax.restUrl + "filmapik/report-broken", !0), t.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"), t.onload = function() {
+							var e;
+							n();
+							try {
+								e = JSON.parse(t.responseText)
+							} catch (t) {
+								e = {
+									success: !1,
+									message: "Error tidak diketahui"
+								}
+							}
+							a(e.message || (e.success ? "Laporan terkirim" : "Gagal mengirim laporan"))
+						}, t.onerror = function() {
+							n(), a("Gagal mengirim laporan")
+						}, t.send(r.toString())
+					}(t)
+				})
+			}
+
+			function n() {
+				e && (e.style.display = "none"), t = null
+			}
+
+			function a(e) {
+				var t = document.createElement("div");
+				t.className = "famv-report-toast", t.innerHTML = '<span class="mr-1.5 shrink-0"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg></span><span>' + e + "</span>", document.body.appendChild(t), requestAnimationFrame(function() {
+					t.classList.add("show")
+				}), setTimeout(function() {
+					t.classList.remove("show"), setTimeout(function() {
+						t.remove()
+					}, 250)
+				}, 2500)
+			} 
+			*/
+		}()
+}();
