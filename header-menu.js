@@ -42,14 +42,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================
     const genres = [
         { name: "Action", slug: "action" },
-        { name: "Comedy", slug: "comedy" },
-        { name: "Drama", slug: "drama" },
-        { name: "Thriller", slug: "thriller" },
-        { name: "Horror", slug: "horror" },
-        { name: "Family", slug: "family" },
-        { name: "Crime", slug: "crime" },
         { name: "Adventure", slug: "adventure" },
-        { name: "Science Fiction", slug: "science-fiction" }
+        { name: "Comedy", slug: "comedy" },
+        { name: "Crime", slug: "crime" },
+        { name: "Drama", slug: "drama" },
+        { name: "Family", slug: "family" },
+        { name: "Horror", slug: "horror" },
+        { name: "Thriller", slug: "thriller" }
     ];
 
     renderList("header-genre", genres, (g) => `
