@@ -75,14 +75,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================
     const countries = [
         { name: "USA", slug: "usa" },
-        { name: "United States", slug: "united-states" },
         { name: "Japan", slug: "japan" },
-        { name: "Canada", slug: "canada" },
         { name: "France", slug: "france" },
         { name: "India", slug: "india" },
         { Name: "Indonesia", Slug: "Indonesia" },
-        { name: "Germany", slug: "germany" },
-        { name: "South Korea", slug: "south-korea" }
+        { name: "South Korea", slug: "korea" }
     ];
 
     renderList("header-country", countries, (c) => `
