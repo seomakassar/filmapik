@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Canada", slug: "canada" },
         { name: "France", slug: "france" },
         { name: "India", slug: "india" },
+        { Name: "Indonesia", Slug: "Indonesia" },
         { name: "Germany", slug: "germany" },
         { name: "South Korea", slug: "south-korea" }
     ];
