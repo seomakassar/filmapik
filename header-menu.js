@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Japan", slug: "japan" },
         { name: "France", slug: "france" },
         { name: "India", slug: "india" },
-        { Name: "Indonesia", Slug: "Indonesia" },
+        { name: "Indonesia", slug: "Indonesia" },
         { name: "South Korea", slug: "korea" }
     ];
 
